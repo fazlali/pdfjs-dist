@@ -17459,7 +17459,7 @@ var _function = __w_pdfjs_require__(33);
 
 var _parser = __w_pdfjs_require__(23);
 
-var _bidi2 = __w_pdfjs_require__(88);
+var _bidi = __w_pdfjs_require__(88);
 
 var _colorspace = __w_pdfjs_require__(15);
 
@@ -18515,7 +18515,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
       }
       function runBidiTransform(textChunk) {
         var str = textChunk.str.join('');
-        var bidiResult = (0, _bidi2.bidi)(str, -1, textChunk.vertical);
+        var bidiResult = (0, _bidi.bidi)(str, -1, textChunk.vertical);
         return {
           str: normalizeWhitespace ? replaceWhitespace(bidiResult.str) : bidiResult.str,
           dir: bidiResult.dir,
@@ -18587,7 +18587,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             height += ty;
           }
           if (/\s/.test(glyphUnicode)) {
-            var transform = textChunk.transform.slice(0);
+            transform = textChunk.transform.slice(0);
             transform[4] += textChunk.currentCharX;
             if (word.str.length > 0) {
               word = {
