@@ -18432,8 +18432,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         textRunBreakAllowed: false,
         transform: null,
         fontName: null,
-        words: [],
-        currentCharX: 0
+        words: []
       };
       var SPACE_FACTOR = 0.3;
       var MULTI_SPACE_FACTOR = 1.5;
@@ -18523,7 +18522,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
           height: textChunk.height,
           transform: textChunk.transform,
           fontName: textChunk.fontName,
-          currentCharX: textChunk.currentCharX,
           words: textChunk.words.map(function (word) {
             return Object.assign({}, word, (0, _bidi.bidi)(word.str.join(''), -1, textChunk.vertical));
           })
@@ -18542,13 +18540,11 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         var height = 0;
         var glyphs = font.charsToGlyphs(chars);
         if (textChunk.words.length === 0) {
-          var transform = textChunk.transform.slice(0);
-          transform[4] += textChunk.currentCharX;
           textChunk.words.push({
             str: [],
             width: 0,
             height: 0,
-            transform: transform
+            x: textChunk.width
           });
         }
         var word = textChunk.words[textChunk.words.length - 1];
@@ -18580,31 +18576,26 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             var w0 = glyphWidth * textState.fontMatrix[0];
             tx = (w0 * textState.fontSize + charSpacing) * textState.textHScale;
             width += tx;
-            textChunk.currentCharX += tx;
           } else {
             var w1 = glyphWidth * textState.fontMatrix[0];
             ty = w1 * textState.fontSize + charSpacing;
             height += ty;
           }
           if (/\s/.test(glyphUnicode)) {
-            transform = textChunk.transform.slice(0);
-            transform[4] += textChunk.currentCharX;
             if (word.str.length > 0) {
               word = {
                 str: [],
                 width: 0,
-                height: 0,
-                transform: transform
+                height: 0
               };
               textChunk.words.push(word);
-            } else {
-              word.transform = transform;
             }
+            word.x = textChunk.width + width;
           } else {
             if (!font.vertical) {
-              word.width += (glyphWidth * textState.fontMatrix[0] * textState.fontSize + charSpacing) * textState.textHScale;
+              word.width += tx;
             } else {
-              word.height += glyphWidth * textState.fontMatrix[0] * textState.fontSize + charSpacing;
+              word.height += ty;
             }
             word.str.push(glyphUnicode);
           }
@@ -18614,7 +18605,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         if (!font.vertical) {
           textChunk.lastAdvanceWidth = width;
           textChunk.width += width;
-          textChunk.currentCharX = textChunk.width;
         } else {
           textChunk.lastAdvanceHeight = height;
           textChunk.height += Math.abs(height);
@@ -18640,11 +18630,16 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         }
         textContentItem.width *= textContentItem.textAdvanceScale;
         textContentItem.height *= textContentItem.textAdvanceScale;
+        textContentItem.words.forEach(function (word) {
+          word.width *= textContentItem.textAdvanceScale;
+          word.height *= textContentItem.textAdvanceScale;
+          word.transform = textContentItem.transform.slice(0);
+          word.transform[4] += word.x * textContentItem.textAdvanceScale;
+        });
         textContent.items.push(runBidiTransform(textContentItem));
         textContentItem.initialized = false;
         textContentItem.str.length = 0;
         textContentItem.words.length = 0;
-        textContentItem.currentCharX = 0;
       }
       function enqueueChunk() {
         var length = textContent.items.length;
@@ -42091,8 +42086,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.448';
-var pdfjsBuild = '714d86f6';
+var pdfjsVersion = '1.9.449';
+var pdfjsBuild = 'b46535d1';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 
