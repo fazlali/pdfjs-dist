@@ -18593,7 +18593,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             word.x = textChunk.width + width;
           } else {
             if (!font.vertical) {
-              word.width += tx;
+              word.width = textChunk.width - word.x + width;
             } else {
               word.height += ty;
             }
@@ -42086,8 +42086,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.449';
-var pdfjsBuild = 'b46535d1';
+var pdfjsVersion = '1.9.450';
+var pdfjsBuild = '36b2629a';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 
