@@ -7339,8 +7339,8 @@ var _UnsupportedManager = function UnsupportedManagerClosure() {
 }();
 var version, build;
 {
-  exports.version = version = '1.9.450';
-  exports.build = build = '36b2629a';
+  exports.version = version = '1.9.451';
+  exports.build = build = 'b0ff641e';
 }
 exports.getDocument = getDocument;
 exports.LoopbackPort = LoopbackPort;
@@ -22527,6 +22527,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
           });
         }
         var word = textChunk.words[textChunk.words.length - 1];
+        word.lastWidth = word.lastX = 0;
         for (var i = 0; i < glyphs.length; i++) {
           var glyph = glyphs[i];
           var glyphWidth = null;
@@ -22560,19 +22561,23 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             ty = w1 * textState.fontSize + charSpacing;
             height += ty;
           }
-          if (/\s/.test(glyphUnicode)) {
+          if (glyph.isSpace || /\s/.test(glyphUnicode)) {
             if (word.str.length > 0) {
               word = {
                 str: [],
                 width: 0,
-                height: 0
+                height: 0,
+                lastWidth: 0,
+                lastX: 0
               };
               textChunk.words.push(word);
             }
             word.x = textChunk.width + width;
+            word.lastX = width;
           } else {
             if (!font.vertical) {
-              word.width = textChunk.width - word.x + width;
+              word.width += tx;
+              word.lastWidth += tx;
             } else {
               word.height += ty;
             }
@@ -22776,6 +22781,16 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                       breakTextRun = textContentItem.textRunBreakAllowed && advance > textContentItem.fakeMultiSpaceMax;
                       if (!breakTextRun) {
                         textContentItem.width += offset;
+                        textContentItem.words.forEach(function (word) {
+                          if (word.lastX) {
+                            word.x += offset * (word.lastX / textContentItem.lastAdvanceWidth);
+                            word.lastX = 0;
+                          }
+                          if (word.lastWidth) {
+                            word.width += offset * (word.lastWidth / textContentItem.lastAdvanceWidth);
+                            word.lastWidth = 0;
+                          }
+                        });
                       }
                     }
                     if (breakTextRun) {
@@ -29098,8 +29113,8 @@ if (!_util.globalScope.PDFJS) {
 }
 var PDFJS = _util.globalScope.PDFJS;
 {
-  PDFJS.version = '1.9.450';
-  PDFJS.build = '36b2629a';
+  PDFJS.version = '1.9.451';
+  PDFJS.build = 'b0ff641e';
 }
 PDFJS.pdfBug = false;
 if (PDFJS.verbosity !== undefined) {
@@ -49795,8 +49810,8 @@ exports.PDFDataTransportStream = PDFDataTransportStream;
 "use strict";
 
 
-var pdfjsVersion = '1.9.450';
-var pdfjsBuild = '36b2629a';
+var pdfjsVersion = '1.9.451';
+var pdfjsBuild = 'b0ff641e';
 var pdfjsSharedUtil = __w_pdfjs_require__(0);
 var pdfjsDisplayGlobal = __w_pdfjs_require__(68);
 var pdfjsDisplayAPI = __w_pdfjs_require__(25);

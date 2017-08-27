@@ -18548,6 +18548,7 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
           });
         }
         var word = textChunk.words[textChunk.words.length - 1];
+        word.lastWidth = word.lastX = 0;
         for (var i = 0; i < glyphs.length; i++) {
           var glyph = glyphs[i];
           var glyphWidth = null;
@@ -18581,19 +18582,23 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             ty = w1 * textState.fontSize + charSpacing;
             height += ty;
           }
-          if (/\s/.test(glyphUnicode)) {
+          if (glyph.isSpace || /\s/.test(glyphUnicode)) {
             if (word.str.length > 0) {
               word = {
                 str: [],
                 width: 0,
-                height: 0
+                height: 0,
+                lastWidth: 0,
+                lastX: 0
               };
               textChunk.words.push(word);
             }
             word.x = textChunk.width + width;
+            word.lastX = width;
           } else {
             if (!font.vertical) {
-              word.width = textChunk.width - word.x + width;
+              word.width += tx;
+              word.lastWidth += tx;
             } else {
               word.height += ty;
             }
@@ -18797,6 +18802,16 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                       breakTextRun = textContentItem.textRunBreakAllowed && advance > textContentItem.fakeMultiSpaceMax;
                       if (!breakTextRun) {
                         textContentItem.width += offset;
+                        textContentItem.words.forEach(function (word) {
+                          if (word.lastX) {
+                            word.x += offset * (word.lastX / textContentItem.lastAdvanceWidth);
+                            word.lastX = 0;
+                          }
+                          if (word.lastWidth) {
+                            word.width += offset * (word.lastWidth / textContentItem.lastAdvanceWidth);
+                            word.lastWidth = 0;
+                          }
+                        });
                       }
                     }
                     if (breakTextRun) {
@@ -42086,8 +42101,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.450';
-var pdfjsBuild = '36b2629a';
+var pdfjsVersion = '1.9.451';
+var pdfjsBuild = 'b0ff641e';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 

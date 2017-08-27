@@ -1,6 +1,6 @@
 {
   "name": "x-pdfjs-dist",
-  "version": "1.9.450",
+  "version": "1.9.451",
   "main": "build/pdf.js",
   "description": "Generic build of Mozilla's PDF.js library forked by Amin Fazlali.",
   "keywords": [

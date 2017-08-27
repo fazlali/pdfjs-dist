@@ -3589,8 +3589,8 @@ var _UnsupportedManager = function UnsupportedManagerClosure() {
 }();
 var version, build;
 {
-  exports.version = version = '1.9.450';
-  exports.build = build = '36b2629a';
+  exports.version = version = '1.9.451';
+  exports.build = build = 'b0ff641e';
 }
 exports.getDocument = getDocument;
 exports.LoopbackPort = LoopbackPort;
@@ -6817,8 +6817,8 @@ if (!_util.globalScope.PDFJS) {
 }
 var PDFJS = _util.globalScope.PDFJS;
 {
-  PDFJS.version = '1.9.450';
-  PDFJS.build = '36b2629a';
+  PDFJS.version = '1.9.451';
+  PDFJS.build = 'b0ff641e';
 }
 PDFJS.pdfBug = false;
 if (PDFJS.verbosity !== undefined) {
@@ -14303,8 +14303,8 @@ exports.PDFDataTransportStream = PDFDataTransportStream;
 "use strict";
 
 
-var pdfjsVersion = '1.9.450';
-var pdfjsBuild = '36b2629a';
+var pdfjsVersion = '1.9.451';
+var pdfjsBuild = 'b0ff641e';
 var pdfjsSharedUtil = __w_pdfjs_require__(0);
 var pdfjsDisplayGlobal = __w_pdfjs_require__(52);
 var pdfjsDisplayAPI = __w_pdfjs_require__(20);
