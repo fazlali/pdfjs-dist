@@ -18569,9 +18569,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             charSpacing += wordSpacing;
             if (wordSpacing > 0) {
               addFakeSpaces(wordSpacing, textChunk.str);
-              word = textChunk.words[textChunk.words.length - 1];
-              word.x = textChunk.width + width;
-              word.lastX = width;
             }
           }
           var tx = 0;
@@ -18585,14 +18582,27 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             ty = w1 * textState.fontSize + charSpacing;
             height += ty;
           }
-          if (!glyph.isSpace) {
-            word.str.push(glyphUnicode);
-          }
-          if (!font.vertical) {
-            word.width += tx;
-            word.lastWidth += tx;
+          if (glyph.isSpace || /\s/.test(glyphUnicode)) {
+            if (word.str.length > 0) {
+              word = {
+                str: [],
+                width: 0,
+                height: 0,
+                lastWidth: 0,
+                lastX: 0
+              };
+              textChunk.words.push(word);
+            }
+            word.x = textChunk.width + width;
+            word.lastX = width;
           } else {
-            word.height += ty;
+            if (!font.vertical) {
+              word.width += tx;
+              word.lastWidth += tx;
+            } else {
+              word.height += ty;
+            }
+            word.str.push(glyphUnicode);
           }
           textState.translateTextMatrix(tx, ty);
           textChunk.str.push(glyphUnicode);
@@ -18607,15 +18617,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         return textChunk;
       }
       function addFakeSpaces(width, strBuf) {
-        if (textContentItem.words.length > 0) {
-          textContentItem.words[textContentItem.words.length - 1].width -= width * textState.textHScale;
-          textContentItem.words.push({
-            str: [],
-            width: 0,
-            height: 0,
-            x: textContentItem.width
-          });
-        }
         if (width < textContentItem.fakeSpaceMin) {
           return;
         }
@@ -18735,6 +18736,15 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += args[1] - textContentItem.lastAdvanceHeight;
                   diff = args[0] - textContentItem.lastAdvanceWidth - (args[1] - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
+                  if (textContentItem.words.length > 0) {
+                    textContentItem.words[textContentItem.words.length - 1].width -= diff * textState.textHScale;
+                  }
+                  textContentItem.words.push({
+                    str: [],
+                    width: 0,
+                    height: 0,
+                    x: textContentItem.width
+                  });
                   break;
                 }
                 flushTextContentItem();
@@ -18759,6 +18769,15 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += advance.height - textContentItem.lastAdvanceHeight;
                   diff = advance.width - textContentItem.lastAdvanceWidth - (advance.height - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
+                  if (textContentItem.words.length > 0) {
+                    textContentItem.words[textContentItem.words.length - 1].width -= diff * textState.textHScale;
+                  }
+                  textContentItem.words.push({
+                    str: [],
+                    width: 0,
+                    height: 0,
+                    x: textContentItem.width
+                  });
                   break;
                 }
                 flushTextContentItem();
@@ -18817,6 +18836,15 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                       flushTextContentItem();
                     } else if (advance > 0) {
                       addFakeSpaces(advance, textContentItem.str);
+                      if (textContentItem.words.length > 0) {
+                        textContentItem.words[textContentItem.words.length - 1].width -= diff * textState.textHScale;
+                      }
+                      textContentItem.words.push({
+                        str: [],
+                        width: 0,
+                        height: 0,
+                        x: textContentItem.width
+                      });
                     }
                   }
                 }
@@ -42100,8 +42128,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.454';
-var pdfjsBuild = '3e606e48';
+var pdfjsVersion = '1.9.455';
+var pdfjsBuild = '7cc83250';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 
