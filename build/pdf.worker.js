@@ -18617,6 +18617,9 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
         return textChunk;
       }
       function addFakeSpaces(width, strBuf) {
+        if (textContentItem.words.length > 0) {
+          textContentItem.words[textContentItem.words.length - 1].width -= width * textState.textHScale;
+        }
         if (width < textContentItem.fakeSpaceMin) {
           return;
         }
@@ -42119,8 +42122,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.452';
-var pdfjsBuild = '1d80b2f2';
+var pdfjsVersion = '1.9.453';
+var pdfjsBuild = '9e5c6a09';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 
