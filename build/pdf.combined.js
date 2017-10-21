@@ -7339,8 +7339,8 @@ var _UnsupportedManager = function UnsupportedManagerClosure() {
 }();
 var version, build;
 {
-  exports.version = version = '1.9.453';
-  exports.build = build = '9e5c6a09';
+  exports.version = version = '1.9.454';
+  exports.build = build = '3e606e48';
 }
 exports.getDocument = getDocument;
 exports.LoopbackPort = LoopbackPort;
@@ -22548,6 +22548,9 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             charSpacing += wordSpacing;
             if (wordSpacing > 0) {
               addFakeSpaces(wordSpacing, textChunk.str);
+              word = textChunk.words[textChunk.words.length - 1];
+              word.x = textChunk.width + width;
+              word.lastX = width;
             }
           }
           var tx = 0;
@@ -22561,27 +22564,14 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
             ty = w1 * textState.fontSize + charSpacing;
             height += ty;
           }
-          if (glyph.isSpace || /\s/.test(glyphUnicode)) {
-            if (word.str.length > 0) {
-              word = {
-                str: [],
-                width: 0,
-                height: 0,
-                lastWidth: 0,
-                lastX: 0
-              };
-              textChunk.words.push(word);
-            }
-            word.x = textChunk.width + width;
-            word.lastX = width;
-          } else {
-            if (!font.vertical) {
-              word.width += tx;
-              word.lastWidth += tx;
-            } else {
-              word.height += ty;
-            }
+          if (!glyph.isSpace) {
             word.str.push(glyphUnicode);
+          }
+          if (!font.vertical) {
+            word.width += tx;
+            word.lastWidth += tx;
+          } else {
+            word.height += ty;
           }
           textState.translateTextMatrix(tx, ty);
           textChunk.str.push(glyphUnicode);
@@ -22598,6 +22588,12 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
       function addFakeSpaces(width, strBuf) {
         if (textContentItem.words.length > 0) {
           textContentItem.words[textContentItem.words.length - 1].width -= width * textState.textHScale;
+          textContentItem.words.push({
+            str: [],
+            width: 0,
+            height: 0,
+            x: textContentItem.width
+          });
         }
         if (width < textContentItem.fakeSpaceMin) {
           return;
@@ -22718,12 +22714,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += args[1] - textContentItem.lastAdvanceHeight;
                   diff = args[0] - textContentItem.lastAdvanceWidth - (args[1] - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
-                  textContentItem.words.push({
-                    str: [],
-                    width: 0,
-                    height: 0,
-                    x: textContentItem.width
-                  });
                   break;
                 }
                 flushTextContentItem();
@@ -22748,12 +22738,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += advance.height - textContentItem.lastAdvanceHeight;
                   diff = advance.width - textContentItem.lastAdvanceWidth - (advance.height - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
-                  textContentItem.words.push({
-                    str: [],
-                    width: 0,
-                    height: 0,
-                    x: textContentItem.width
-                  });
                   break;
                 }
                 flushTextContentItem();
@@ -22812,12 +22796,6 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                       flushTextContentItem();
                     } else if (advance > 0) {
                       addFakeSpaces(advance, textContentItem.str);
-                      textContentItem.words.push({
-                        str: [],
-                        width: 0,
-                        height: 0,
-                        x: textContentItem.width
-                      });
                     }
                   }
                 }
@@ -29134,8 +29112,8 @@ if (!_util.globalScope.PDFJS) {
 }
 var PDFJS = _util.globalScope.PDFJS;
 {
-  PDFJS.version = '1.9.453';
-  PDFJS.build = '9e5c6a09';
+  PDFJS.version = '1.9.454';
+  PDFJS.build = '3e606e48';
 }
 PDFJS.pdfBug = false;
 if (PDFJS.verbosity !== undefined) {
@@ -49831,8 +49809,8 @@ exports.PDFDataTransportStream = PDFDataTransportStream;
 "use strict";
 
 
-var pdfjsVersion = '1.9.453';
-var pdfjsBuild = '9e5c6a09';
+var pdfjsVersion = '1.9.454';
+var pdfjsBuild = '3e606e48';
 var pdfjsSharedUtil = __w_pdfjs_require__(0);
 var pdfjsDisplayGlobal = __w_pdfjs_require__(68);
 var pdfjsDisplayAPI = __w_pdfjs_require__(25);
