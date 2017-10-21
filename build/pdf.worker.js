@@ -18736,6 +18736,12 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += args[1] - textContentItem.lastAdvanceHeight;
                   diff = args[0] - textContentItem.lastAdvanceWidth - (args[1] - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
+                  textContentItem.words.push({
+                    str: [],
+                    width: 0,
+                    height: 0,
+                    x: textContentItem.width
+                  });
                   break;
                 }
                 flushTextContentItem();
@@ -18760,6 +18766,12 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                   textContentItem.height += advance.height - textContentItem.lastAdvanceHeight;
                   diff = advance.width - textContentItem.lastAdvanceWidth - (advance.height - textContentItem.lastAdvanceHeight);
                   addFakeSpaces(diff, textContentItem.str);
+                  textContentItem.words.push({
+                    str: [],
+                    width: 0,
+                    height: 0,
+                    x: textContentItem.width
+                  });
                   break;
                 }
                 flushTextContentItem();
@@ -18818,6 +18830,12 @@ var PartialEvaluator = function PartialEvaluatorClosure() {
                       flushTextContentItem();
                     } else if (advance > 0) {
                       addFakeSpaces(advance, textContentItem.str);
+                      textContentItem.words.push({
+                        str: [],
+                        width: 0,
+                        height: 0,
+                        x: textContentItem.width
+                      });
                     }
                   }
                 }
@@ -42101,8 +42119,8 @@ exports.Type1Parser = Type1Parser;
 "use strict";
 
 
-var pdfjsVersion = '1.9.451';
-var pdfjsBuild = 'b0ff641e';
+var pdfjsVersion = '1.9.452';
+var pdfjsBuild = '1d80b2f2';
 var pdfjsCoreWorker = __w_pdfjs_require__(61);
 exports.WorkerMessageHandler = pdfjsCoreWorker.WorkerMessageHandler;
 
